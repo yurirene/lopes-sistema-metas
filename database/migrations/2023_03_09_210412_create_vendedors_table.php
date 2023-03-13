@@ -13,8 +13,11 @@ class CreateVendedorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('vendedors', function (Blueprint $table) {
+        Schema::create('vendedores', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo');
+            $table->string('nome')->nullable();
+            $table->bigInteger('supervisor_id')->unsigned();
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateVendedorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vendedors');
+        Schema::dropIfExists('vendedores');
     }
 }

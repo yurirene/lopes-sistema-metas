@@ -15,6 +15,9 @@ class CreatePlanilhasTable extends Migration
     {
         Schema::create('planilhas', function (Blueprint $table) {
             $table->id();
+            $table->string('referencia');
+            $table->string('path');
+            $table->bigInteger('user_id')->unsigned();
             $table->timestamps();
         });
     }

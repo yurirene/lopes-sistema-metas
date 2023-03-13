@@ -13,8 +13,10 @@ class CreateSupervisorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('supervisors', function (Blueprint $table) {
+        Schema::create('supervisores', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo');
+            $table->string('nome')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateSupervisorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supervisors');
+        Schema::dropIfExists('supervisores');
     }
 }

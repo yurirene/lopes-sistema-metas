@@ -5,6 +5,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\LojaController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\PlanilhaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 

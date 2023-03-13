@@ -23,7 +23,7 @@
 
                 <li class="sidebar-item {{ request()->is('planilha*') ? 'active' : '' }}">
                     <a href="{{ route('planilha.index') }}" class='sidebar-link'>
-                        <i class="bi bi-bag"></i>
+                        <i class="bi bi-file-earmark-excel"></i>
                         <span>Planilhas</span>
                     </a>
                 </li>
