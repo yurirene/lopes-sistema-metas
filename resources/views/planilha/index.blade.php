@@ -41,10 +41,15 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Importar</button>
+                <button type="submit" id="import" class="btn btn-primary">Importar</button>
             </div>
         </div>
     {!! Form::close() !!}
+    </div>
+</div>
+<div class="overlay" id="loader" style="display: none;">
+    <div class="overlay__inner">
+        <div class="overlay__content"><span class="spinner"></span></div>
     </div>
 </div>
 
@@ -52,4 +57,11 @@
 @push('js')
 
 {!! $dataTable->scripts() !!}
+<script>
+
+$('#import').on('click', function () {
+    $('#loader').show();
+})
+
+</script>
 @endpush

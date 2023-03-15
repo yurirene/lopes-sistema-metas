@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Planilha extends Model
 {
-    use HasFactory;
+    protected $table = 'planilhas';
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

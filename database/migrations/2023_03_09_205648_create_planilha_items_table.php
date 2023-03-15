@@ -31,9 +31,10 @@ class CreatePlanilhaItemsTable extends Migration
             $table->string('cod_subgrupo_produto')->nullable();
             $table->string('tipo_subgrupo_produto')->nullable();
             $table->string('nova_meta')->nullable();
+            $table->string('cod_supervisor');
+            $table->string('cod_representante');
             $table->tinyInteger('status')->default(1);
-            $table->bigInteger('supervisor_id')->unsigned();
-            $table->bigInteger('vendedor_id')->unsigned();
+            $table->bigInteger('planilha_id')->unsigned();
             $table->timestamps();
         });
     }

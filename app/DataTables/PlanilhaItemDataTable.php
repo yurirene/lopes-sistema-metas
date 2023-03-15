@@ -2,16 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Models\Planilha;
-use App\Models\User;
-use App\Models\Users;
+use App\Models\PlanilhaItem;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class PlanilhaDataTable extends DataTable
+class PlanilhaItemDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -24,7 +20,7 @@ class PlanilhaDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function ($sql) {
-                return view('planilha.actions', [
+                return view('planilha.actions-item', [
                     'route' => 'planilha',
                     'id' => $sql->id,
                 ]);
@@ -32,20 +28,31 @@ class PlanilhaDataTable extends DataTable
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
-            ->editColumn('user_id', function ($sql) {
-                return $sql->usuario->name;
-            });
+            ->editColumn('status', function ($sql) {
+                return $sql->status_formatado;
+            })
+            ->editColumn('meta_valor', function ($sql) {
+                return "<a class=''
+                    data-bs-toggle='modal'
+                    href='#atualizarModal'
+                    data-id='$sql->id'
+                    data-valor='$sql->meta_valor'
+                    role='button'
+                >$sql->meta_valor</a>";
+            })
+            ->rawColumns(['status', 'meta_valor']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Planilha $model
+     * @param \App\Models\User $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Planilha $model)
+    public function query(PlanilhaItem $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()
+            ->where('planilha_id', request()->route('planilha'));
     }
 
     /**
@@ -61,14 +68,9 @@ class PlanilhaDataTable extends DataTable
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')
-                            ->text('<i class="bi bi-file-earmark-arrow-up"></i> Importar')
-                            ->addClass('btn-novo-registro')
-                            ->action("function() {
-                                $('#importar').modal('show');
-                            }"),
-                    );
+                    ->parameters([
+                        'buttons' => []
+                    ]);
     }
 
     /**
@@ -84,9 +86,11 @@ class PlanilhaDataTable extends DataTable
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center'),
-            Column::make('referencia')->title('Referencia'),
-            Column::make('user_id')->title('Usuário'),
-            Column::make('created_at')->title('Criado em'),
+            Column::make('data')->title('Data'),
+            Column::make('cod_representante')->title('Representante'),
+            Column::make('meta_valor')->title('Meta'),
+            Column::make('status')->title('Status'),
+            Column::make('subgrupo_produto')->title('Subgrupo Produto'),
         ];
     }
 
@@ -97,6 +101,6 @@ class PlanilhaDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Users_' . date('YmdHis');
+        return 'Metas_' . date('YmdHis');
     }
 }

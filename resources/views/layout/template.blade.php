@@ -26,7 +26,7 @@
         @include('layout.menu')
         <div id="main">
             <header class="mb-3">
-                <a href="#" class="burger-btn d-block d-xl-none">
+                <a href="#" class="burger-btn d-block">
                     <i class="bi bi-justify fs-3"></i>
                 </a>
             </header>
@@ -61,7 +61,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+
     <script src="/js/init.js"></script>
     @if ($errors->any())
         @foreach ($errors->all() as $error)
@@ -70,7 +70,7 @@
         </script>
         @endforeach
     @endif
-  
+
     @if (session('mensagem'))
         @if(session('mensagem')['tipo'] == 'success')
         <script>
@@ -85,21 +85,23 @@
 
     <script>
         function deleteRegistro(url) {
-                Swal.fire({
-                    title: 'Tem certeza?',
-                    text: "Deseja apagar o registro?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sim!',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = url;
-                    }
-                })
-            }
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja apagar o registro?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            })
+        }
+
+        $('.money').mask('000.000.000.000.000,00', {reverse: true});
     </script>
     @stack('js')
 </body>

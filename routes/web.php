@@ -6,6 +6,8 @@ use App\Http\Controllers\LojaController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\PlanilhaController;
+use App\Http\Controllers\SupervisorController;
+use App\Http\Controllers\VendedorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +19,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::resource('planilha', PlanilhaController::class)->names('planilha')->except(['destroy']);
     Route::get('/planilha-delete/{planilha}', [PlanilhaController::class, 'delete'])->name('planilha.delete');
+    Route::post('/planilha-atualizar-valor', [PlanilhaController::class, 'atualizarValor'])->name('planilha.atualizar-valor');
 
     Route::resource('supervisores', SupervisorController::class)->names('supervisores')->except(['destroy']);
     Route::get('/supervisores-delete/{supervisor}', [SupervisorController::class, 'delete'])->name('supervisores.delete');

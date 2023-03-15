@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Planilha;
+use App\Models\Supervisor;
 use App\Models\User;
 use App\Models\Users;
 use Yajra\DataTables\Html\Button;
@@ -11,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class PlanilhaDataTable extends DataTable
+class SupervisorDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -24,26 +25,23 @@ class PlanilhaDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function ($sql) {
-                return view('planilha.actions', [
-                    'route' => 'planilha',
+                return view('supervisor.actions', [
+                    'route' => 'supervisor',
                     'id' => $sql->id,
                 ]);
             })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
-            })
-            ->editColumn('user_id', function ($sql) {
-                return $sql->usuario->name;
             });
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Planilha $model
+     * @param \App\Models\Supervisor $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Planilha $model)
+    public function query(Supervisor $model)
     {
         return $model->newQuery();
     }
@@ -56,19 +54,20 @@ class PlanilhaDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('planilha-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')
-                            ->text('<i class="bi bi-file-earmark-arrow-up"></i> Importar')
-                            ->addClass('btn-novo-registro')
-                            ->action("function() {
-                                $('#importar').modal('show');
-                            }"),
-                    );
+            ->setTableId('supervisor-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(1)
+            ->parameters([
+                'buttons' => [
+                    [
+                        'text' => '<i class="bi bi-person-plus"></i> Novo Supervisor',
+                        'className' => 'btn-novo-registro',
+                        'action' => 'function() {}'
+                    ]
+                ]
+            ]);
     }
 
     /**
@@ -84,8 +83,8 @@ class PlanilhaDataTable extends DataTable
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center'),
-            Column::make('referencia')->title('Referencia'),
-            Column::make('user_id')->title('Usuário'),
+            Column::make('nome')->title('Nome'),
+            Column::make('codigo')->title('Cod Supervisor'),
             Column::make('created_at')->title('Criado em'),
         ];
     }
@@ -97,6 +96,6 @@ class PlanilhaDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Users_' . date('YmdHis');
+        return 'Supervisores_' . date('YmdHis');
     }
 }

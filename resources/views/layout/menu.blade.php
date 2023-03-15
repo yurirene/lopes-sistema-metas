@@ -21,27 +21,41 @@
                     </a>
                 </li>
 
+                @can('menu', ['master'])
                 <li class="sidebar-item {{ request()->is('planilha*') ? 'active' : '' }}">
                     <a href="{{ route('planilha.index') }}" class='sidebar-link'>
                         <i class="bi bi-file-earmark-excel"></i>
                         <span>Planilhas</span>
                     </a>
                 </li>
+                @endcan
 
+                @can('menu', ['master', 'gerente'])
                 <li class="sidebar-item {{ request()->is('supervisores*') ? 'active' : '' }}">
                     <a href="{{ route('supervisores.index') }}" class='sidebar-link'>
                         <i class="bi bi-person-square"></i>
                         <span>Supervisores</span>
                     </a>
                 </li>
+                @endcan
 
+                @can('menu', ['supervisor'])
+                <li class="sidebar-item {{ request()->is('vendedor*') ? 'active' : '' }}">
+                    <a href="{{ route('vendedores.index') }}" class='sidebar-link'>
+                        <i class="bi bi-person-badge"></i>
+                        <span>Vendedores</span>
+                    </a>
+                </li>
+                @endcan
 
+                @can('menu', ['master'])
                 <li class="sidebar-item {{ request()->is('usuarios*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-people"></i>
                         <span>Usuários</span>
                     </a>
                 </li>
+                @endcan
 
                 <li class="sidebar-item {{ request()->is('relatorios*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>

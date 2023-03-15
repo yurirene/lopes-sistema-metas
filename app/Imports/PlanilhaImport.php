@@ -3,6 +3,8 @@
 namespace App\Imports;
 
 use App\Models\PlanilhaItem;
+use App\Models\Supervisor;
+use App\Models\Vendedor;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -17,14 +19,40 @@ class PlanilhaImport implements ToCollection, WithBatchInserts, WithCustomCsvSet
     {
         try {
             DB::beginTransaction();
+            $supervisor = null;
+            $vendedor = null;
             foreach ($collection as $row) {
-                dd($row);
+                if (
+                    is_null($supervisor)
+                    || $supervisor->cod_supervisor != $row['cod_supervisor']
+                ) {
+                    $supervisor = Supervisor::updateOrCreate(
+                        [
+                            'codigo' => $row['cod_supervisor']
+                        ],
+                        [
+                            'codigo' => $row['cod_supervisor'],
+                            'nome' => $row['supervisor']
+                        ]
+                    );
+                }
+                if (
+                    is_null($vendedor)
+                    || $vendedor->codigo != $row['cod_representante']
+                ) {
+                    $vendedor = Vendedor::updateOrCreate(
+                        [
+                            'codigo' => $row['cod_representante']
+                        ],
+                        [
+                            'codigo' => $row['cod_representante'],
+                            'nome' => $row['representante'],
+                            'supervisor_id' => $supervisor->id
+                        ]
+                    );
+                }
                 PlanilhaItem::updateOrCreate([
                     "data" => $row["data"],
-                    "cod_representante" => $row["cod_representante"],
-                    "representante" => $row["representante"],
-                    "cod_supervisor" => $row["cod_supervisor"],
-                    "supervisor" => $row["supervisor"],
                     "cod_gerente" => $row["cod_gerente"],
                     "gerente" => $row["gerente"],
                     "familia_produto" => $row["familia_produto"],
@@ -38,7 +66,9 @@ class PlanilhaImport implements ToCollection, WithBatchInserts, WithCustomCsvSet
                     "meta_valor" => $row["meta_valor"],
                     "cob_meta" => $row["cob_meta"],
                     "cod_subgrupo_produto" => $row["cod_subgrupo_produto"],
-                    "tipo_subgrupo_produto" => $row["tipo_subgrupo_produto"]
+                    "tipo_subgrupo_produto" => $row["tipo_subgrupo_produto"],
+                    'vendedor_id' => $vendedor->id,
+                    'supervisor_id' => $supervisor->id
                 ]);
             }
             DB::commit();
@@ -51,7 +81,7 @@ class PlanilhaImport implements ToCollection, WithBatchInserts, WithCustomCsvSet
 
     public function batchSize(): int
     {
-        return 100;
+        return 1000;
     }
 
     public function getCsvSettings(): array
