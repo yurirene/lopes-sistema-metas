@@ -32,10 +32,14 @@ class CreatePlanilhaItemsTable extends Migration
             $table->string('tipo_subgrupo_produto')->nullable();
             $table->string('nova_meta')->nullable();
             $table->string('cod_supervisor');
+            $table->string('supervisor');
             $table->string('cod_representante');
+            $table->string('representante');
             $table->tinyInteger('status')->default(1);
             $table->bigInteger('planilha_id')->unsigned();
             $table->timestamps();
+
+            $table->foreign('planilha_id')->references('id')->on('planilhas')->cascadeOnDelete();
         });
     }
 

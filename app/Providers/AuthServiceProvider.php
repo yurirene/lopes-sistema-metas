@@ -29,5 +29,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('menu', function (User $user, ...$permitido) {
             return in_array($user->perfil->name, $permitido);
         });
+
+        Gate::define('permissao', function (User $user, string $permissao) {
+            return in_array($permissao, $user->permissao->pluck('name')->toArray());
+        });
     }
 }

@@ -3,6 +3,6 @@
         Ações
     </button>
     <div class="dropdown-menu">
-        <button class="dropdown-item" onclick="">Excluir</button>
+        <button class="dropdown-item" onclick="deleteRegistro('{{ route('planilha.delete.item', $id) }}')">Excluir</button>
     </div>
 </div>

@@ -3,12 +3,36 @@
 namespace App\DataTables;
 
 use App\Models\PlanilhaItem;
+use App\Services\PermissaoService;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
 class PlanilhaItemDataTable extends DataTable
 {
+    protected $printColumns = [
+        'data',
+        'cod_gerente',
+        'gerente',
+        'familia_produto',
+        'subgrupo_produto',
+        'cod_produto',
+        'produto',
+        'cod_empresa',
+        'empresa',
+        'qtd_meta',
+        'volume_meta_kg',
+        'meta_valor',
+        'cob_meta',
+        'cod_subgrupo_produto',
+        'tipo_subgrupo_produto',
+        'cod_supervisor',
+        'supervisor',
+        'cod_representante',
+        'representante',
+        'status'
+    ];
+
     /**
      * Build DataTable class.
      *
@@ -21,7 +45,6 @@ class PlanilhaItemDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function ($sql) {
                 return view('planilha.actions-item', [
-                    'route' => 'planilha',
                     'id' => $sql->id,
                 ]);
             })
@@ -36,9 +59,9 @@ class PlanilhaItemDataTable extends DataTable
                     data-bs-toggle='modal'
                     href='#atualizarModal'
                     data-id='$sql->id'
-                    data-valor='$sql->meta_valor'
+                    data-valor='$sql->meta_valor_formatado'
                     role='button'
-                >$sql->meta_valor</a>";
+                >$sql->valor_meta</a>";
             })
             ->rawColumns(['status', 'meta_valor']);
     }
@@ -52,7 +75,13 @@ class PlanilhaItemDataTable extends DataTable
     public function query(PlanilhaItem $model)
     {
         return $model->newQuery()
-            ->where('planilha_id', request()->route('planilha'));
+            ->where('planilha_id', request()->route('planilha'))
+            ->when(request()->filled('supervisores'), function ($sql) {
+                return $sql->whereIn('cod_supervisor', request()->get('supervisores'));
+            })
+            ->when(request()->filled('status'), function ($sql) {
+                return $sql->where('status', request()->get('status'));
+            });
     }
 
     /**
@@ -63,13 +92,22 @@ class PlanilhaItemDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('planilha-table')
+                    ->setTableId('planilha-item-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('Bfrtip')
+                    ->dom('lBfrtip')
                     ->orderBy(1)
                     ->parameters([
-                        'buttons' => []
+                        'buttons' => [
+                            [
+                                'text' => '<em class="fas fa-file-excel"></em> Baixar CSV',
+                                'extend' => 'csv'
+                            ]
+                        ],
+                        "language" => [
+                            "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                        ],
+                        'responsive' => true
                     ]);
     }
 
@@ -80,18 +118,37 @@ class PlanilhaItemDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+        $colunas = [];
+        if (!PermissaoService::verificaPermissao('permite_apagar_item_planilha')) {
+            $colunas[] = Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center');
+        }
+        $colunas += [
             Column::make('data')->title('Data'),
-            Column::make('cod_representante')->title('Representante'),
-            Column::make('meta_valor')->title('Meta'),
-            Column::make('status')->title('Status'),
+            Column::make('cod_gerente')->title('Cod Gerente'),
+            Column::make('gerente')->title('Gerente'),
+            Column::make('familia_produto')->title('Familia Produto'),
             Column::make('subgrupo_produto')->title('Subgrupo Produto'),
+            Column::make('cod_produto')->title('Cod Produto'),
+            Column::make('produto')->title('Produto'),
+            Column::make('cod_empresa')->title('Cod Empresa'),
+            Column::make('empresa')->title('Empresa'),
+            Column::make('qtd_meta')->title('Qtd Meta'),
+            Column::make('volume_meta_kg')->title('Volume Meta Kg'),
+            Column::make('meta_valor')->title('Meta Valor'),
+            Column::make('cob_meta')->title('Cob Meta'),
+            Column::make('cod_subgrupo_produto')->title('Cod Subgrupo Produto'),
+            Column::make('tipo_subgrupo_produto')->title('Tipo Subgrupo Produto'),
+            Column::make('cod_supervisor')->title('Cod Supervisor'),
+            Column::make('supervisor')->title('Supervisor'),
+            Column::make('cod_representante')->title('Cod Representante'),
+            Column::make('representante')->title('Representante'),
+            Column::make('status')->title('Status'),
         ];
+        return $colunas;
     }
 
     /**

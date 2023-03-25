@@ -35,8 +35,12 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
+                    <label for="referencia">Referência</label>
+                    <input type="text" class="form-control datepicker-mes-ano" name="referencia" id="referencia" autocomplete="off" required="true" />
+                </div>
+                <div class="mb-3">
                     <label for="arquivo" class="form-label">Planilha</label>
-                    <input class="form-control" type="file" name="planilha" id="arquivo">
+                    <input class="form-control" type="file" name="planilha" id="arquivo" required="true">
                 </div>
             </div>
             <div class="modal-footer">
@@ -60,7 +64,12 @@
 <script>
 
 $('#import').on('click', function () {
-    $('#loader').show();
+    if (
+        $("#referencia").val().length != 0
+        && $('#arquivo').val().length != 0
+    ) {
+        $('#loader').show();
+    }
 })
 
 </script>

@@ -7,6 +7,8 @@ use App\Models\Planilha;
 use App\Models\PlanilhaItem;
 use App\Models\Supervisor;
 use App\Models\Vendedor;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,17 +22,21 @@ class PlanilhaService
     public static function importar(Request $request) : void
     {
         try {
+
+            self::validarImportacao($request->toArray());
+
             $rows = SimpleExcelReader::create($request->planilha, 'csv')
                 ->useDelimiter(';')
                 ->getRows();
             DB::beginTransaction();
             $planilha = Planilha::create([
-                'referencia' => '03/2023',
+                'referencia' => $request->referencia,
                 'user_id' => auth()->user()->id
             ]);
-            $supervisores = [];
-            $vendedores = [];
+            $supervisores = Supervisor::get()->pluck('nome', 'codigo')->toArray();
+            $vendedores = Vendedor::get()->pluck('nome', 'codigo')->toArray();
             $rows->each(function (array $row) use ($planilha, &$supervisores, &$vendedores) {
+
                 if (!isset($supervisores[$row['cod_supervisor']])) {
                     $supervisor = Supervisor::create([
                         'codigo' => $row['cod_supervisor'],
@@ -48,6 +54,10 @@ class PlanilhaService
                 }
                 PlanilhaItem::create([
                     "data" => $row["data"],
+                    'cod_representante' => $row['cod_representante'],
+                    'representante' => $row['representante'],
+                    'cod_supervisor' => $row['cod_supervisor'],
+                    'supervisor' => $row['supervisor'],
                     "cod_gerente" => $row["cod_gerente"],
                     "gerente" => $row["gerente"],
                     "familia_produto" => $row["familia_produto"],
@@ -62,15 +72,12 @@ class PlanilhaService
                     "cob_meta" => $row["cob_meta"],
                     "cod_subgrupo_produto" => $row["cod_subgrupo_produto"],
                     "tipo_subgrupo_produto" => self::clean($row["tipo_subgrupo_produto"]),
-                    'cod_representante' => $row['cod_representante'],
-                    'cod_supervisor' => $row['cod_supervisor'],
                     'planilha_id' => $planilha->id
                 ]);
             });
             DB::commit();
         } catch (Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             throw $th;
         }
     }
@@ -79,5 +86,118 @@ class PlanilhaService
         $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
 
         return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
-     }
+    }
+
+    /**
+     * Verifica se não existe uma planilha para essa referencia,
+     *
+     *  ** true - Não existe referencia
+     *  ** false - Existe referencia
+     *
+     * @param string $referencia
+     * @return bool
+     */
+    public static function existeReferencia(string $referencia): bool
+    {
+        return Planilha::where('referencia', $referencia)
+            ->get()
+            ->isNotEmpty();
+    }
+
+    /**
+     * Valida de acordo com as regra para importação da planilha
+     *
+     * @param array $request
+     * @return void
+     */
+    public static function validarImportacao(array $request): void
+    {
+
+        $existeReferencia = self::existeReferencia($request['referencia']);
+        if (!$existeReferencia) {
+            return;
+        }
+        if (!PermissaoService::verificaPermissao('permite_sobreescrever_planilha')) {
+            throw new Exception(
+                "Já existe um lançamento para "
+                    . $request['referencia']
+                    . ' e você não pode alterar' ,
+                505
+            );
+        }
+        self::apagarPlanilha($request['referencia']);
+    }
+
+    /**
+     * Método para apagar planilhas e seus itens
+     *
+     * @param string $referencia
+     * @return void
+     */
+    public static function apagarPlanilha(string $referencia): void
+    {
+        try {
+            $planilha = Planilha::where('referencia', $referencia)->first();
+            $planilha->itens()->delete();
+            $planilha->delete();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Método para retornar campos dos filtros
+     *
+     * @return array
+     */
+    public static function filtros(): array
+    {
+        try {
+            $supervisores = Supervisor::all()->pluck('nome', 'codigo')->unique();
+            $status = ['' => '', 0 => 'Aguardando', 1 => 'Aprovado'];
+            return [
+                'supervisores' => $supervisores,
+                'status' => $status
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Atualizar Valor da Meta
+     *
+     * @param array $request
+     * @return void
+     */
+    public static function atualizarValor(array $request): void
+    {
+        try {
+            $planilhaItem = PlanilhaItem::find($request['id']);
+            if ($planilhaItem->meta_valor_formatado == $request['valor']) {
+                return;
+            }
+            $planilhaItem->update([
+                'nova_meta' => $request['valor'],
+                'status' => 0
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Método para deletar item da planilha
+     *
+     * @param PlanilhaItem $item
+     * @return void
+     */
+    public static function deleteItem(PlanilhaItem $item): void
+    {
+        try {
+            $item->delete();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

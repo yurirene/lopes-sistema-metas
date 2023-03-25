@@ -14,4 +14,9 @@ class Planilha extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function itens()
+    {
+        return $this->hasMany(PlanilhaItem::class, 'planilha_id');
+    }
 }

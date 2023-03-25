@@ -19,6 +19,9 @@
     <link rel="stylesheet" href="/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/datepicker/datepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/vendor/select2/select2.min.css">
 </head>
 
 <body>
@@ -61,6 +64,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/datepicker/bootstrap-datepicker.js"></script>
+    <script src="/datepicker/bootstrap-datepicker.pt-BR.js"></script>
+    <script src="/vendor/select2/select2.min.js"></script>
 
     <script src="/js/init.js"></script>
     @if ($errors->any())
@@ -102,6 +108,21 @@
         }
 
         $('.money').mask('000.000.000.000.000,00', {reverse: true});
+        $(".datepicker-mes-ano").datepicker({
+            language: 'pt-BR',
+            format: "mm/yyyy",
+            viewMode: "months",
+            minViewMode: "months"
+        });
+
+        $('.prev i').removeClass();
+        $('.prev i').addClass("fa fa-chevron-left");
+
+        $('.next i').removeClass();
+        $('.next i').addClass("fa fa-chevron-right");
+
+
+        $('.isSelect2').select2();
     </script>
     @stack('js')
 </body>

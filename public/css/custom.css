@@ -389,3 +389,11 @@ ul.timeline > li:before {
     transform: rotate(360deg);
   }
 }
+
+.dt-button:not(.btn-novo-registro) {
+    background-color: #9b9b9b !important;
+    color: #fff !important;
+}
+/* .dropdown-menu.show {
+    background-color: #f5f5f5 !important;
+} */

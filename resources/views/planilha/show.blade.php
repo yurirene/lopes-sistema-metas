@@ -1,6 +1,6 @@
 @extends('layout.template')
 
-@section('title', 'Planilhas')
+@section('title', 'Metas')
 @section('content')
 <section class="row">
     <div class="col-12 col-lg-12">
@@ -9,34 +9,52 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Lista de Planilhas</h4>
+                        <h4>Metas</h4>
                     </div>
                     <div class="card-body">
-                        <h6>Filtros</h6>
+                        <a href="{{ route('planilha.index') }}" class="btn btn-outline-secondary">
+                            <em class="fas fa-arrow-left"></em> Voltar
+                        </a>
+                        <h6 class="mt-3 mb-3">Filtros</h6>
                         <div class="row mb-2">
-                            <div class="col-3">
+                            <div class="col-md-4 col-sm-6">
                                 <label>Supervisor</label>
-                                <select class="form-control" disabled></select>
+                                {!! Form::select(
+                                    'supervisores',
+                                    $filtros['supervisores'],
+                                    null,
+                                    [
+                                        'class' => 'form-control isSelect2',
+                                        'multiple' => true,
+                                        'id' => 'supervisores'
+                                    ]
+                                ) !!}
                             </div>
-                            <div class="col-3">
+                            <div class="col-md-4 col-sm-6">
                                 <label>Status</label>
-                                <select class="form-control" disabled></select>
-                            </div>
-                            <div class="col-3">
-                                <label>Subgrupo Produto</label>
-                                <select class="form-control" disabled></select>
+                                {!!
+                                    Form::select(
+                                        'status',
+                                        $filtros['status'],
+                                        null,
+                                        [
+                                            'class' => 'form-control',
+                                            'id' => 'status'
+                                        ]
+                                    );
+                                !!}
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col">
-                                <button type="button" class="btn btn-secondary">Filtrar</button>
-                                <button type="button" class="btn btn-secondary">Voltar</button>
+                                <button type="button" class="btn btn-secondary" id="filtrar">Filtrar</button>
+                                <button type="button" class="btn btn-secondary" id="resetar">Resetar</button>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mt-5">
                             <div class="col">
-                                <div class="table-fluid">
-                                    {!! $dataTable->table(['class' => 'table table-fluid w-100']) !!}
+                                <div class="table-responsive">
+                                    {!! $dataTable->table(['class' => 'table', 'style="width:100%"']) !!}
                                 </div>
                             </div>
                         </div>
@@ -48,7 +66,6 @@
 </section>
 <div class="modal" id="atualizarModal" tabindex="-1">
     <div class="modal-dialog">
-    {!! Form::open(['method' => 'POST', 'route' => 'planilha.atualizar-valor', 'files' => false]) !!}
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Atualizar Meta</h5>
@@ -64,7 +81,6 @@
                 <button type="button" id="atualizar" class="btn btn-primary">Atualizar</button>
             </div>
         </div>
-    {!! Form::close() !!}
     </div>
 </div>
 <div class="overlay" id="loader" style="display: none;">
@@ -78,19 +94,59 @@
 
 {!! $dataTable->scripts() !!}
 <script>
+const table = $('#planilha-item-table');
 
 $('#atualizar').on('click', function () {
     $('#loader').show();
+    $.ajax({
+        url: "{{route('planilha.atualizar-valor')}}",
+        type: 'POST',
+        data: {
+            _token: '{{csrf_token()}}',
+            valor: $('#valor').val(),
+            id: $('#id').val()
+        },
+        success: function() {
+            $('#loader').hide();
+            toastr.success("Valor Atualizado", 'Sucesso!');
+            table.DataTable().ajax.reload(null, false);
+            $('#atualizarModal').modal('hide');
+        },
+        error: function() {
+            $('#loader').hide();
+            toastr.error("Algo deu Errado", 'Erro!');
+        }
+    });
 })
 $('#atualizarModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget)
-  var id = button.data('id')
-  var valor = button.data('valor')
-  var modal = $(this)
-  modal.find('#id').val(id);
-  modal.find('#valor').val(valor);
-  modal.find('#valor').trigger('keyup');
-})
+    var button = $(event.relatedTarget)
+    var id = button.data('id')
+    var valor = button.data('valor')
+    var modal = $(this)
+    modal.find('#id').val(id);
+    modal.find('#valor').val(valor);
+    modal.find('#valor').trigger('keyup');
+});
+
+
+
+table.on('preXhr.dt', function(e, settings, data){
+    data.supervisores = $('#supervisores').val();
+    data.status = $('#status').val();
+});
+
+
+$('#filtrar').on('click', function (){
+    table.DataTable().ajax.reload();
+    return false;
+});
+
+$('#resetar').on('click', function (){
+    $('#supervisores').val(null).trigger('change');
+    $('#status').val(null).trigger('change');
+    table.DataTable().ajax.reload();
+    return false;
+});
 
 </script>
 @endpush
