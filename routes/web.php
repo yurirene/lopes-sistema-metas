@@ -22,7 +22,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/planilha-delete-item/{item}', [PlanilhaController::class, 'deleteItem'])->name('planilha.delete.item');
     Route::post('/planilha-atualizar-valor', [PlanilhaController::class, 'atualizarValor'])->name('planilha.atualizar-valor');
 
-    Route::resource('supervisores', SupervisorController::class)->names('supervisores')->except(['destroy']);
+    Route::resource('supervisores', SupervisorController::class)->names('supervisores')->parameter('supervisores', 'supervisor')->except(['destroy']);
     Route::get('/supervisores-delete/{supervisor}', [SupervisorController::class, 'delete'])->name('supervisores.delete');
 
     Route::resource('vendedores', VendedorController::class)->names('vendedores')->except(['destroy']);

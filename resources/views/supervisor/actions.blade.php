@@ -3,8 +3,8 @@
         Ações
     </button>
     <div class="dropdown-menu">
-        <a class="dropdown-item" href="{{ route('usuarios.show', $id) }}">Vendedores</a>
-        <a class="dropdown-item" href="{{ route('usuarios.edit', $id) }}">Editar</a>
-        <button class="dropdown-item" onclick="deleteRegistro('{{ route('usuarios.delete', $id) }}')">Excluir</button>
+        <a class="dropdown-item" href="{{ route('supervisores.show', $id) }}">Vendedores</a>
+        <a class="dropdown-item" href="{{ route('supervisores.edit', $id) }}">Editar</a>
+        <button class="dropdown-item" onclick="deleteRegistro('{{ route('supervisores.delete', $id) }}')">Excluir</button>
     </div>
 </div>

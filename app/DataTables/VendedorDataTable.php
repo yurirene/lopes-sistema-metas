@@ -9,6 +9,11 @@ use Yajra\DataTables\Services\DataTable;
 
 class VendedorDataTable extends DataTable
 {
+    private $supervisor;
+    public function __construct(Supervisor $supervisor)
+    {
+        $this->supervisor = $supervisor;
+    }
     /**
      * Build DataTable class.
      *
@@ -19,12 +24,6 @@ class VendedorDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function ($sql) {
-                return view('supervisor.actions', [
-                    'route' => 'supervisor',
-                    'id' => $sql->id,
-                ]);
-            })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             });
@@ -38,10 +37,11 @@ class VendedorDataTable extends DataTable
      */
     public function query(Vendedor $model)
     {
-        $supervisor = Supervisor::first();
-        return $model->newQuery()->when(!is_null($supervisor), function ($sql) use ($supervisor) {
-            return $sql->where('supervisor_id', $supervisor->id);
-        });
+        $supervisor = $this->supervisor->id;
+        return $model->newQuery()
+            ->when(!is_null($supervisor), function ($sql) use ($supervisor) {
+                return $sql->where('supervisor_id', $supervisor);
+            });
     }
 
     /**
@@ -60,11 +60,14 @@ class VendedorDataTable extends DataTable
             ->parameters([
                 'buttons' => [
                     [
-                        'text' => '<i class="bi bi-person-plus"></i> Novo Vendedor',
-                        'className' => 'btn-novo-registro',
-                        'action' => 'function() {}'
+                        'text' => '<i class="fas fa-arrow-left"></i> Voltar',
+                        'action' => 'function() {window.location.href="'
+                            . route("supervisores.index") . '"}'
                     ]
-                ]
+                ],
+                "language" => [
+                    "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                ],
             ]);
     }
 
@@ -76,13 +79,8 @@ class VendedorDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
             Column::make('nome')->title('Nome'),
-            Column::make('codigo')->title('Cod Supervisor'),
+            Column::make('codigo')->title('Cod Representante'),
             Column::make('created_at')->title('Criado em'),
         ];
     }
@@ -94,6 +92,6 @@ class VendedorDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Supervisores_' . date('YmdHis');
+        return 'Vendedores_' . date('YmdHis');
     }
 }

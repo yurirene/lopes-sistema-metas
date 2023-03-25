@@ -38,20 +38,28 @@ class PlanilhaService
             $rows->each(function (array $row) use ($planilha, &$supervisores, &$vendedores) {
 
                 if (!isset($supervisores[$row['cod_supervisor']])) {
-                    $supervisor = Supervisor::create([
-                        'codigo' => $row['cod_supervisor'],
-                        'nome' => $row['supervisor']
-                    ]);
+                    $supervisor = Supervisor::updateOrCreate(
+                        [
+                            'codigo' => $row['cod_supervisor']
+                        ],
+                        [
+                            'codigo' => $row['cod_supervisor'],
+                            'nome' => $row['supervisor']
+                        ]
+                    );
                     $supervisores[$supervisor->codigo] = $supervisor->id;
                 }
                 if (!isset($vendedores[$row['cod_representante']])) {
-                    $vendedor = Vendedor::create([
+                    $vendedor = Vendedor::updateOrCreate([
+                        'codigo' => $row['cod_representante'],
+                    ], [
                         'codigo' => $row['cod_representante'],
                         'nome' => $row['representante'],
                         'supervisor_id' => $supervisores[$row['cod_supervisor']]
                     ]);
                     $vendedores[$vendedor->codigo] = $vendedor->id;
                 }
+
                 PlanilhaItem::create([
                     "data" => $row["data"],
                     'cod_representante' => $row['cod_representante'],
@@ -78,6 +86,7 @@ class PlanilhaService
             DB::commit();
         } catch (Throwable $th) {
             DB::rollBack();
+            dd($th->getMessage());
             throw $th;
         }
     }

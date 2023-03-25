@@ -1,45 +1,45 @@
 @extends('layout.template')
 
-@section('title', $titulo)
+@section('title', 'Supervisores')
 @section('content')
 <section class="row">
     <div class="col-12 col-lg-12">
-        
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Formulário de {{ $titulo }}</h4>
+                        <h4>Formulário de Supervisores</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                @if(!isset($model))
-                                {!! Form::open(['method' => 'POST', 'route' => 'usuarios.store', 'class' => 'form-horizontal']) !!}
+                                @if(!isset($supervisor))
+                                {!! Form::open(['method' => 'POST', 'route' => 'supervisores.store', 'class' => 'form-horizontal']) !!}
                                 @else
-                                {!! Form::model($model, ['route' => ['usuarios.update', $model->id], 'method' => 'PUT', 'class' => 'form-horizontal']) !!}
+                                {!! Form::model($supervisor, ['route' => ['supervisores.update', $supervisor->id], 'method' => 'PUT', 'class' => 'form-horizontal']) !!}
                                 @endif
                                 <div class="mb-3">
-                                    {!! Form::label('name', 'Nome') !!}
-                                    {!! Form::text('name', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                    {!! Form::label('nome', 'Nome') !!}
+                                    {!! Form::text('nome', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
                                 </div>
                                 <div class="mb-3">
-                                    {!! Form::label('email', 'Email') !!}
+                                    {!! Form::label('codigo', 'Código') !!}
+                                    {!! Form::text('codigo', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                </div>
+
+                                <div class="mb-3">
+                                    {!! Form::label('email', 'E-mail') !!}
                                     {!! Form::email('email', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
                                 </div>
+
                                 <div class="mb-3">
-                                    {!! Form::label('password', 'Senha') !!}
-                                    {!! Form::password('password', ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                    {!! Form::label('senha', 'Senha') !!}
+                                    {!! Form::password('senha', ['class' => 'form-control', 'autocomplete' => 'off']) !!}
                                 </div>
-                                <div class="mb-3">
-                                    {!! Form::label('cargo', 'Cargo') !!}
-                                    {!! Form::text('cargo', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-                                </div>
-                                <div class="mb-3">
-                                    {!! Form::label('departamento_id', 'Departamento') !!}
-                                    {!! Form::select('departamento_id', $departamentos ,null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-                                </div>
-                                <button type="submit" class="btn btn-primary">{{ isset($model) ? 'Atualizar' : 'Cadastrar' }}</button>
+                                <h6>Permissões</h6>
+                                <button type="submit" class="btn btn-primary">{{ isset($supervisor) ? 'Atualizar' : 'Cadastrar' }}</button>
+                                <a href="{{route('supervisores.index')}}" class="btn btn-secondary">Voltar</a>
                                 {!! Form::close() !!}
                             </div>
                         </div>
