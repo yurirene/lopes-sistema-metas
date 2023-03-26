@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -27,7 +27,7 @@ class PerfilService
             throw $th;
         }
     }
-    
+
     public static function getToSelect() : array
     {
         try {

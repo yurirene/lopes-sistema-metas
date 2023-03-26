@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -33,6 +33,7 @@ class UsuarioService
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'password' => Hash::make($request['password']),
+                'perfil_id' => $request['perfil_id']
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -44,6 +45,7 @@ class UsuarioService
             $usuario->update([
                 'name' => $request['name'],
                 'email' => $request['email'],
+                'perfil_id' => $request['perfil_id']
             ]);
             if (!empty($request['password'])) {
                 $usuario->update(['password' => Hash::make($request['password'])]);

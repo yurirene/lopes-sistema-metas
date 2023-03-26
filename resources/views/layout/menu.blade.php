@@ -17,7 +17,7 @@
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }} ">
                     <a href="{{ route('home') }}" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
-                        <span>Dashboard</span>
+                        <span>Início</span>
                     </a>
                 </li>
 
@@ -59,7 +59,7 @@
 
                 @can('menu', ['master'])
                 <li class="sidebar-item {{ request()->is('usuarios*') ? 'active' : '' }}">
-                    <a href="#" class='sidebar-link'>
+                    <a href="{{ route('usuarios.index') }}" class='sidebar-link'>
                         <i class="bi bi-people"></i>
                         <span>Usuários</span>
                     </a>

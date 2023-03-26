@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 
     Route::get('/alteracao-metas', [AlteracaoMetaController::class, 'index'])->name('alteracao-metas.index');
+    Route::post('/alteracao-metas/atualizar', [AlteracaoMetaController::class, 'atualizar'])->name('alteracao-metas.atualizar');
 
     Route::resource('vendedores', VendedorController::class)->names('vendedores')->except(['destroy']);
     Route::get('/vendedores-delete/{funcionario}', [VendedorController::class, 'delete'])->name('vendedores.delete');

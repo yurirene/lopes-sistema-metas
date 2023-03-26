@@ -28,11 +28,6 @@ class AlteracaoMetasDataTable extends DataTable
                     id='checkbox_$query->id'
                     value='$query->id'>";
             })
-            ->addColumn('action', function ($sql) {
-                return view('alteracao-metas.actions', [
-                    'id' => $sql->id,
-                ]);
-            })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
@@ -97,12 +92,6 @@ class AlteracaoMetasDataTable extends DataTable
                 ->exportable(false)
                 ->printable(false)
                 ->searchable(false),
-            Column::computed('action')
-                ->exportable(false)
-                ->printable(false)
-                ->width(60)
-                ->addClass('text-center')
-                ->title('Ações'),
             Column::make('referencia')->title('Referência'),
             Column::make('subgrupo_produto')->title('Subgrupo Produto'),
             Column::make('produto')->title('Produto'),

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Perfil;
 use App\Models\Permissao;
 use App\Models\Supervisor;
 use App\Models\User;
@@ -74,7 +75,8 @@ class SupervisorService
             $usuario = User::create([
                 'name' => $request['nome'],
                 'email' => $request['email'],
-                'password' => Hash::make($request['senha'])
+                'password' => Hash::make($request['senha']),
+                'perfil_id' => Perfil::where('name', 'supervisor')->first()->id
             ]);
 
             $supervisor->update([

@@ -51,7 +51,7 @@
         </div>
     </div>
 </section>
-<input type="text" id="selecionados"  />
+<input type="text" id="selecionados" hidden />
 @endsection
 @push('js')
 
@@ -60,28 +60,28 @@
 <script>
 const table = $('#atualizar-metas-table');
 
-$('#atualizar').on('click', function () {
+
+function atualizar(tipo) {
     $('#loader').show();
     $.ajax({
-        url: "{{route('planilha.atualizar-valor')}}",
+        url: "{{route('alteracao-metas.atualizar')}}",
         type: 'POST',
         data: {
             _token: '{{csrf_token()}}',
-            valor: $('#valor').val(),
-            id: $('#id').val()
+            ids: $('#selecionados').val(),
+            tipo: tipo
         },
         success: function() {
             $('#loader').hide();
-            toastr.success("Valor Atualizado", 'Sucesso!');
+            toastr.success("Metas atualizadas", 'Sucesso!');
             table.DataTable().ajax.reload(null, false);
-            $('#atualizarModal').modal('hide');
         },
         error: function() {
             $('#loader').hide();
             toastr.error("Algo deu Errado", 'Erro!');
         }
     });
-});
+}
 
 
 table.on('preXhr.dt', function(e, settings, data){
@@ -118,7 +118,7 @@ $(document).on('click','#checkbox-master', function(){
     adicionarBotao();
 });
 
-$(document).on('click','#checkbox', function(){
+$(document).on('click','.isCheck', function(){
     checkboxAction();
     adicionarBotao();
 });
@@ -134,7 +134,7 @@ function aprovar() {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = url;
+            atualizar(1);
         }
     })
 }
@@ -150,7 +150,7 @@ function reprovar() {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = url;
+            atualizar(0);
         }
     })
 }
@@ -158,10 +158,10 @@ function reprovar() {
 function adicionarBotao()
 {
     var checkboxs = [];
-    var botao = '<button class="btn btn-success" type="button" id="botao_aprovar"  onclick="aprovar()">'
+    var botao = '<button class="btn btn-outline-success" type="button" id="botao_aprovar"  onclick="aprovar()">'
                     +'Aprovar'
                 +'</button>'
-                +'<button class="btn btn-danger" type="button" id="botao_reprovar"  onclick="reprovar()">'
+                +'<button class="btn btn-outline-danger" type="button" id="botao_reprovar"  onclick="reprovar()">'
                     +'Reprovar'
                 +'</button>';
     $('.isCheck').prop('checked', $(this).prop('checked'));
@@ -169,28 +169,15 @@ function adicionarBotao()
         checkboxs.push($(this).val());
     });
     if (checkboxs.length > 0) {
-        $('.dt-buttons').append(botao);
+        if (!$('.dt-buttons').find('#botao_aprovar').length){
+            $('.dt-buttons').append(botao);
+        }
     } else {
         $('#botao_aprovar').remove();
         $('#botao_reprovar').remove();
     }
 }
 
-
-function alterar_data_porto()
-{
-    var ids = [];
-    $("input:checkbox[name=linhas]:checked").each(function () {
-        ids.push($(this).val());
-    });
-    $('#titulo_modal').text('Chegada no Porto');
-    $('#label_modal').text('Data de Chegada no Porto');
-    $('[name="ids"]').val(ids);
-    $('#formulario_modal').attr('action', route);
-    $('#modal_data').modal('show');
-
-
-}
 
 </script>
 @endpush

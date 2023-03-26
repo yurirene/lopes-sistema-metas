@@ -13,10 +13,36 @@ use Illuminate\Support\Facades\Log;
 
 class UsuarioController extends Controller
 {
-    public function index()
+    public function index(UsersDataTable $dataTable)
     {
         try {
-            
+            return $dataTable->render('usuarios.index');
+        } catch (\Throwable $th) {
+            Log::error([
+                'erro' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+
+            return redirect()
+                ->route('home')
+                ->withErrors(['Erro ao realizar essa operação.']);
+        }
+    }
+
+    public function create(User $usuario)
+    {
+        return view('usuarios.form', [
+            'perfis' => PerfilService::getToSelect()
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            UsuarioService::store($request->all());
+            return redirect()->route('usuarios.index')
+                ->with(['mensagem' => ['tipo' => 'success', 'mensagem' => 'Registro salvo com sucesso!']]);
         } catch (\Throwable $th) {
             Log::error([
                 'erro' => $th->getMessage(),
@@ -28,12 +54,20 @@ class UsuarioController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function edit(User $usuario)
+    {
+        return view('usuarios.form', [
+            'usuario' => $usuario,
+            'perfis' => PerfilService::getToSelect()
+        ]);
+    }
+
+    public function update(User $usuario, Request $request)
     {
         try {
-            UsuarioService::store($request->all());
+            UsuarioService::update($request->all(), $usuario);
             return redirect()->route('usuarios.index')
-                ->with(['mensagem' => ['tipo' => 'success', 'mensagem' => 'Registro salvo com sucesso!']]);
+                ->with(['mensagem' => ['tipo' => 'success', 'mensagem' => 'Registro atualizado com sucesso!']]);
         } catch (\Throwable $th) {
             Log::error([
                 'erro' => $th->getMessage(),

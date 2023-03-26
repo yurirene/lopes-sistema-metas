@@ -1,23 +1,30 @@
 @extends('layout.template')
 
-@section('title', $titulo)
+@section('title', 'Usuários')
 @section('content')
 <section class="row">
     <div class="col-12 col-lg-12">
-        
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Formulário de {{ $titulo }}</h4>
+                        <h4>Formulário de Usuário</h4>
                     </div>
                     <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <a href="{{ route('usuarios.index') }}" class="btn btn-sm btn-outline-secondary">
+                                    <em class="fas fa-arrow-left"></em> Voltar
+                                </a>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col">
-                                @if(!isset($model))
+                                @if(!isset($usuario))
                                 {!! Form::open(['method' => 'POST', 'route' => 'usuarios.store', 'class' => 'form-horizontal']) !!}
                                 @else
-                                {!! Form::model($model, ['route' => ['usuarios.update', $model->id], 'method' => 'PUT', 'class' => 'form-horizontal']) !!}
+                                {!! Form::model($usuario, ['route' => ['usuarios.update', $usuario->id], 'method' => 'PUT', 'class' => 'form-horizontal']) !!}
                                 @endif
                                 <div class="mb-3">
                                     {!! Form::label('name', 'Nome') !!}
@@ -32,14 +39,10 @@
                                     {!! Form::password('password', ['class' => 'form-control', 'autocomplete' => 'off']) !!}
                                 </div>
                                 <div class="mb-3">
-                                    {!! Form::label('cargo', 'Cargo') !!}
-                                    {!! Form::text('cargo', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                    {!! Form::label('perfil_id', 'Perfil') !!}
+                                    {!! Form::select('perfil_id', $perfis, null, ['class' => 'form-control']) !!}
                                 </div>
-                                <div class="mb-3">
-                                    {!! Form::label('departamento_id', 'Departamento') !!}
-                                    {!! Form::select('departamento_id', $departamentos ,null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-                                </div>
-                                <button type="submit" class="btn btn-primary">{{ isset($model) ? 'Atualizar' : 'Cadastrar' }}</button>
+                                <button type="submit" class="btn btn-primary">{{ isset($usuario) ? 'Atualizar' : 'Cadastrar' }}</button>
                                 {!! Form::close() !!}
                             </div>
                         </div>
