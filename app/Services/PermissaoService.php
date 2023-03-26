@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Permissao;
+use App\Models\Supervisor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Throwable;
@@ -25,12 +26,24 @@ class PermissaoService
     }
 
     /**
-     * Listar Permissões para o select
+     * Listar Permissões para o select do supervisor
      */
-    public static function listarPermissoes(): array
+    public static function listarPermissoes(Supervisor $supervisor = null): array
     {
         try {
-            return Permissao::get()->pluck('nome', 'id')->toArray();
+            $permissoes = [];
+            if (!is_null($supervisor) && $supervisor->usuario) {
+                $permissoes = $supervisor->usuario->permissao->pluck('id')->toArray();
+            }
+            return Permissao::get()
+                ->map(function ($item) use ($permissoes) {
+                    $item->checked = false;
+                    if (in_array($item->id, $permissoes)) {
+                        $item->checked = true;
+                    }
+                    return $item;
+                })
+                ->toArray();
         } catch (\Throwable $th) {
             throw $th;
         }

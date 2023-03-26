@@ -5,6 +5,5 @@
     <div class="dropdown-menu">
         <a class="dropdown-item" href="{{ route('supervisores.show', $id) }}">Vendedores</a>
         <a class="dropdown-item" href="{{ route('supervisores.edit', $id) }}">Editar</a>
-        <button class="dropdown-item" onclick="deleteRegistro('{{ route('supervisores.delete', $id) }}')">Excluir</button>
     </div>
 </div>

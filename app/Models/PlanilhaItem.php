@@ -46,4 +46,9 @@ class PlanilhaItem extends Model
             : "";
         return $valor;
     }
+
+    public function planilha()
+    {
+        return $this->belongsTo(Planilha::class, 'planilha_id');
+    }
 }

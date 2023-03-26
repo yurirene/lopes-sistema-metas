@@ -39,6 +39,15 @@
                 </li>
                 @endcan
 
+                @can('menu', ['master', 'gerente'])
+                <li class="sidebar-item {{ request()->is('alteracao-metas*') ? 'active' : '' }}">
+                    <a href="{{ route('alteracao-metas.index') }}" class='sidebar-link'>
+                        <i class="bi bi-clipboard-data"></i>
+                        <span>Alteração de Metas</span>
+                    </a>
+                </li>
+                @endcan
+
                 @can('menu', ['supervisor'])
                 <li class="sidebar-item {{ request()->is('vendedor*') ? 'active' : '' }}">
                     <a href="{{ route('vendedores.index') }}" class='sidebar-link'>

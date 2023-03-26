@@ -47,8 +47,8 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col">
-                                <button type="button" class="btn btn-secondary" id="filtrar">Filtrar</button>
-                                <button type="button" class="btn btn-secondary" id="resetar">Resetar</button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="filtrar">Filtrar</button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="resetar">Resetar</button>
                             </div>
                         </div>
                         <div class="row mt-5">

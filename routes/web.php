@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlteracaoMetaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\LojaController;
@@ -24,6 +25,9 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::resource('supervisores', SupervisorController::class)->names('supervisores')->parameter('supervisores', 'supervisor')->except(['destroy']);
     Route::get('/supervisores-delete/{supervisor}', [SupervisorController::class, 'delete'])->name('supervisores.delete');
+
+
+    Route::get('/alteracao-metas', [AlteracaoMetaController::class, 'index'])->name('alteracao-metas.index');
 
     Route::resource('vendedores', VendedorController::class)->names('vendedores')->except(['destroy']);
     Route::get('/vendedores-delete/{funcionario}', [VendedorController::class, 'delete'])->name('vendedores.delete');

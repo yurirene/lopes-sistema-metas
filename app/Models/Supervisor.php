@@ -15,4 +15,9 @@ class Supervisor extends Model
         return $this->hasMany(Vendedor::class, 'supervisor_id');
     }
 
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

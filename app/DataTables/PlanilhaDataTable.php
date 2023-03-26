@@ -88,7 +88,8 @@ class PlanilhaDataTable extends DataTable
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
-                  ->addClass('text-center'),
+                  ->addClass('text-center')
+                  ->title('Ações'),
             Column::make('referencia')->title('Referencia'),
             Column::make('user_id')->title('Usuário'),
             Column::make('created_at')->title('Criado em'),

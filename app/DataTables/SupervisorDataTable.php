@@ -32,6 +32,9 @@ class SupervisorDataTable extends DataTable
             })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
+            })
+            ->editColumn('email', function ($sql) {
+                return $sql->usuario ? $sql->usuario->email : 'Sem registro';
             });
     }
 
@@ -64,7 +67,7 @@ class SupervisorDataTable extends DataTable
                     [
                         'text' => '<i class="bi bi-person-plus"></i> Novo Supervisor',
                         'className' => 'btn-novo-registro',
-                        'action' => 'function() {}'
+                        'extend' => 'create'
                     ]
                 ],
                 "language" => [
@@ -85,9 +88,11 @@ class SupervisorDataTable extends DataTable
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
-                  ->addClass('text-center'),
+                  ->addClass('text-center')
+                  ->title('Ações'),
             Column::make('nome')->title('Nome'),
             Column::make('codigo')->title('Cod Supervisor'),
+            Column::make('email')->title('E-mail'),
             Column::make('created_at')->title('Criado em'),
         ];
     }

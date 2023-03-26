@@ -124,7 +124,8 @@ class PlanilhaItemDataTable extends DataTable
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)
-                ->addClass('text-center');
+                ->addClass('text-center')
+                ->title('Ações');
         }
         $colunas += [
             Column::make('data')->title('Data'),

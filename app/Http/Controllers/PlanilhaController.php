@@ -47,10 +47,8 @@ class PlanilhaController extends Controller
 
     public function show(PlanilhaItemDataTable $dataTable)
     {
-
-        $filtros = PlanilhaService::filtros();
         return $dataTable->render('planilha.show', [
-            'filtros' => $filtros
+            'filtros' => PlanilhaService::filtros()
         ]);
     }
 
