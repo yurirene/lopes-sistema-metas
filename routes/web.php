@@ -14,25 +14,46 @@ use Illuminate\Support\Facades\Route;
 
 
 Auth::routes();
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])
+        ->name('home');
 
-    Route::resource('planilha', PlanilhaController::class)->names('planilha')->except(['destroy']);
-    Route::get('/planilha-delete/{planilha}', [PlanilhaController::class, 'delete'])->name('planilha.delete');
-    Route::get('/planilha-delete-item/{item}', [PlanilhaController::class, 'deleteItem'])->name('planilha.delete.item');
-    Route::post('/planilha-atualizar-valor', [PlanilhaController::class, 'atualizarValor'])->name('planilha.atualizar-valor');
+    Route::resource('planilha', PlanilhaController::class)
+        ->names('planilha')
+        ->except(['destroy']);
+    Route::get('/planilha-delete/{planilha}', [PlanilhaController::class, 'delete'])
+        ->name('planilha.delete');
+    Route::get('/planilha-delete-item/{item}', [PlanilhaController::class, 'deleteItem'])
+        ->name('planilha.delete.item');
+    Route::post('/planilha-atualizar-valor', [PlanilhaController::class, 'atualizarValor'])
+        ->name('planilha.atualizar-valor');
 
-    Route::resource('supervisores', SupervisorController::class)->names('supervisores')->parameter('supervisores', 'supervisor')->except(['destroy']);
-    Route::get('/supervisores-delete/{supervisor}', [SupervisorController::class, 'delete'])->name('supervisores.delete');
+    Route::resource('supervisores', SupervisorController::class)
+        ->names('supervisores')
+        ->parameter('supervisores', 'supervisor')
+        ->except(['destroy']);
+    Route::get('/supervisores-delete/{supervisor}', [SupervisorController::class, 'delete'])
+        ->name('supervisores.delete');
 
 
-    Route::get('/alteracao-metas', [AlteracaoMetaController::class, 'index'])->name('alteracao-metas.index');
-    Route::post('/alteracao-metas/atualizar', [AlteracaoMetaController::class, 'atualizar'])->name('alteracao-metas.atualizar');
+    Route::get('/alteracao-metas', [AlteracaoMetaController::class, 'index'])
+        ->name('alteracao-metas.index');
+    Route::post('/alteracao-metas/atualizar', [AlteracaoMetaController::class, 'atualizar'])
+        ->name('alteracao-metas.atualizar');
 
-    Route::resource('vendedores', VendedorController::class)->names('vendedores')->except(['destroy']);
-    Route::get('/vendedores-delete/{funcionario}', [VendedorController::class, 'delete'])->name('vendedores.delete');
+    Route::resource('vendedores', VendedorController::class)
+        ->names('vendedores')
+        ->except(['destroy']);
+    Route::get('/vendedores-delete/{funcionario}', [VendedorController::class, 'delete'])
+        ->name('vendedores.delete');
 
-    Route::resource('usuarios', UsuarioController::class)->names('usuarios')->except(['destroy']);
-    Route::get('/usuarios-delete/{usuario}', [UsuarioController::class, 'delete'])->name('usuarios.delete');
+    Route::resource('usuarios', UsuarioController::class)
+        ->names('usuarios')
+        ->except(['destroy']);
+    Route::get('/usuarios-status/{usuario}', [UsuarioController::class, 'status'])
+        ->name('usuarios.status');
+    Route::post('/usuarios-atualizar-senha/{usuario}', [UsuarioController::class, 'atualizarSenha'])
+        ->name('usuarios.atualizar-senha');
 });

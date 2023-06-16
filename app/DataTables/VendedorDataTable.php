@@ -37,10 +37,10 @@ class VendedorDataTable extends DataTable
      */
     public function query(Vendedor $model)
     {
-        $supervisor = $this->supervisor->id;
+        $supervisor = auth()->user()->supervisor;
         return $model->newQuery()
             ->when(!is_null($supervisor), function ($sql) use ($supervisor) {
-                return $sql->where('supervisor_id', $supervisor);
+                return $sql->where('supervisor_id', $supervisor->id);
             });
     }
 

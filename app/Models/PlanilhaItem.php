@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Casts\DateCast;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\VarDumper\Caster\DateCaster;
 
 class PlanilhaItem extends Model
 {
+    use Auditable;
+
     protected $table = 'planilha_items';
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $casts = ['data' => DateCast::class];

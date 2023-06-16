@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
@@ -56,11 +57,26 @@ class UsuarioService
         }
     }
 
-    public static function delete($usuario) : void
+    public static function status(User $usuario): void
     {
         try {
-            $usuario = User::find($usuario);
-            $usuario->delete();
+            $usuario->update([
+                'status' => !$usuario->status
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function atualizarSenha(User $usuario, array $request): void
+    {
+        try {
+            if (!Hash::check($request['senhaAntiga'], $usuario->password)) {
+                throw new Exception("Senha Incorreta", 1);
+            }
+            $usuario->update([
+                'password' => Hash::make($request['novaSenha']),
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -104,7 +104,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col">
                                 <h6>Permissões</h6>
                                 @foreach($permissoes as $key => $permissao)
@@ -127,7 +127,7 @@
                                 </div>
                                 @endforeach
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="row mt-5">
                             <div class="col">

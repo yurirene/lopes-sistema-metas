@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Supervisor extends Model
 {
+    use Auditable;
+
     protected $table = 'supervisores';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

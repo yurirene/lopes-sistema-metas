@@ -31,7 +31,10 @@ class PerfilService
     public static function getToSelect() : array
     {
         try {
-            return Perfil::all()->pluck('nome', 'id')->toArray();
+            return Perfil::where('name', '<>' ,'supervisor')
+                ->get()
+                ->pluck('nome', 'id')
+                ->toArray();
         } catch (\Throwable $th) {
             throw $th;
         }

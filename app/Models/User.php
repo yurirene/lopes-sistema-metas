@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Auditable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'perfil_id'
+        'perfil_id',
+        'status'
     ];
 
     /**
@@ -46,6 +48,11 @@ class User extends Authenticatable
     public function perfil()
     {
         return $this->belongsTo(Perfil::class, 'perfil_id');
+    }
+
+    public function supervisor()
+    {
+        return $this->hasOne(Supervisor::class, 'user_id');
     }
 
     public function permissao()

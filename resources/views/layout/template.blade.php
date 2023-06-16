@@ -40,7 +40,6 @@
             <div class="page-content">
                 @yield('content')
             </div>
-
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
@@ -50,6 +49,7 @@
             </footer>
         </div>
     </div>
+    @include('usuarios.modal-atualizar-senha')
     <script src="/assets/vendors/jquery/jquery.min.js"></script>
     <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="/assets/js/bootstrap.bundle.min.js"></script>
@@ -95,6 +95,23 @@
                 title: 'Tem certeza?',
                 text: "Deseja apagar o registro?",
                 icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            })
+        }
+
+        function confirmAction(url, msg, icon = 'warning') {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: msg,
+                icon: icon,
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',

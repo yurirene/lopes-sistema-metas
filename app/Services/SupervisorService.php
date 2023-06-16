@@ -42,16 +42,18 @@ class SupervisorService
                 $usuario = User::create([
                     'name' => $request['nome'],
                     'email' => $request['email'],
-                    'password' => Hash::make($request['senha'])
+                    'password' => Hash::make($request['senha']),
+                    'perfil_id' => Perfil::where('name', 'supervisor')->first()->id
                 ]);
                 $supervisor->update([
                     'user_id' => $usuario->id
                 ]);
             }
-            $usuario->permissao()->sync($request['permissoes']);
+            $usuario->permissao()->sync($request['permissoes'] ?? []);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th->getMessage());
             throw $th;
         }
     }
@@ -69,7 +71,8 @@ class SupervisorService
         try {
             $supervisor = Supervisor::create([
                 'nome' => $request['nome'],
-                'codigo' => $request['codigo']
+                'codigo' => $request['codigo'],
+                'is_admin' => 0
             ]);
 
             $usuario = User::create([

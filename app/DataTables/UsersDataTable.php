@@ -22,15 +22,22 @@ class UsersDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
+            ->addColumn('action', function ($sql) {
                 return view('usuarios.actions', [
                     'route' => 'usuarios',
                     'id' => $sql->id,
+                    'ativo' => $sql->status
                 ]);
             })
-            ->editColumn('created_at', function($sql) {
+            ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
-            });
+            })
+            ->editColumn('status', function ($sql) {
+                return $sql->status
+                    ? "<span class='badge bg-light-success'>Ativo</span>"
+                    : "<span class='badge bg-light-danger'>Inativo</span>";
+            })
+            ->rawColumns(['status']);
     }
 
     /**
@@ -51,15 +58,23 @@ class UsersDataTable extends DataTable
      */
     public function html()
     {
+        $botoes = [];
+        if (auth()->user()->is_admin) {
+            $botoes[] = [
+                'extend' => 'create',
+                'text' => '<i class="fas fa-plus"></i> Novo Registro',
+                'className' => 'btn-novo-registro'
+            ];
+        }
         return $this->builder()
-                    ->setTableId('usersdatatable-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Registro')->addClass('btn-novo-registro'),
-                    );
+            ->setTableId('usersdatatable-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(1)
+            ->parameters([
+                'buttons' => $botoes
+            ]);
     }
 
     /**
@@ -77,6 +92,7 @@ class UsersDataTable extends DataTable
                   ->addClass('text-center'),
             Column::make('name')->title('Nome'),
             Column::make('email')->title('E-mail'),
+            Column::make('status')->title('Status'),
             Column::make('created_at')->title('Criado em'),
         ];
     }

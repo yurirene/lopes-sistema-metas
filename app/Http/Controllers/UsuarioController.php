@@ -78,4 +78,39 @@ class UsuarioController extends Controller
             return redirect()->back()->withErrors(['Erro ao realizar essa operação.'])->withInput();
         }
     }
+
+    public function status(User $usuario)
+    {
+        try {
+            UsuarioService::status($usuario);
+            return redirect()->route('usuarios.index')
+                ->with(['mensagem' => ['tipo' => 'success', 'mensagem' => 'Registro salvo com sucesso!']]);
+        } catch (\Throwable $th) {
+            Log::error([
+                'erro' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+
+            return redirect()->back()->withErrors(['Erro ao realizar essa operação.'])->withInput();
+        }
+    }
+
+    public function atualizarSenha(User $usuario, Request $request)
+    {
+        try {
+            UsuarioService::atualizarSenha($usuario, $request->all());
+            return redirect()->route('usuarios.index')
+                ->with(['mensagem' => ['tipo' => 'success', 'mensagem' => 'Registro salvo com sucesso!']]);
+        } catch (\Throwable $th) {
+            Log::error([
+                'erro' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+
+            return redirect()->back()->withErrors(['Erro ao realizar essa operação.'])->withInput();
+        }
+
+    }
 }

@@ -67,7 +67,7 @@
                 @endcan
 
                 <li class="sidebar-item {{ request()->is('relatorios*') ? 'active' : '' }}">
-                    <a href="#" class='sidebar-link'>
+                    <a href="#" class='sidebar-link' data-bs-toggle="modal" data-bs-target="#atualizar-senha" >
                         <i class="bi bi-lock"></i>
                         <span>Trocar Senha</span>
                     </a>
