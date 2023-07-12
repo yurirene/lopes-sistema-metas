@@ -1,14 +1,13 @@
 <p align="center"><img src="https://snc.meuapp.net.br/public/img/logo_completa.png" width="400"></p>
 
-# Sistema de Gestão de Não Conformidades
-Sistema desenvolvido para registrar não conformidades com suas causas e planos de ação.
+# Sistema de Metas
+Sistema desenvolvido para processar planilha de metas
 
 ## Funcionalidades
 
-- Cadastro de Usuários, Departamentos, Tipos de Ações, Origens.
-- Cadastro da Não Conformidade.
-- Cadastro da Análise de Causa vinculada a Não Conformidade.
-- Geração de Relatórios.
+- Cadastro de Usuários, Supervisores.
+- Importação da planilha de metas
+- Alteração do valor das metas e aprovação da alteração
 
 ## Tecnologias
 
