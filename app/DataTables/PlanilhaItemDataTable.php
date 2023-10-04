@@ -34,6 +34,18 @@ class PlanilhaItemDataTable extends DataTable
     ];
 
     /**
+     * Booleano se é Gerente
+     *
+     * @var string
+     */
+    protected $isGerente;
+
+    public function __construct()
+    {
+        $this->isGerente = auth()->user()->perfil->name == 'gerente';
+    }
+
+    /**
      * Build DataTable class.
      *
      * @param mixed $query Results from query() method.
@@ -43,6 +55,13 @@ class PlanilhaItemDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            ->editColumn('checkbox', function ($query) {
+                return "<input type='checkbox'
+                    class='form-check-input isCheck form-checkbox'
+                    name='linhas'
+                    id='checkbox_$query->id'
+                    value='$query->id'>";
+            })
             ->addColumn('action', function ($sql) {
                 return view('planilha.actions-item', [
                     'id' => $sql->id,
@@ -54,16 +73,33 @@ class PlanilhaItemDataTable extends DataTable
             ->editColumn('status', function ($sql) {
                 return $sql->status_formatado;
             })
-            ->editColumn('meta_valor', function ($sql) {
-                return "<a class=''
-                    data-bs-toggle='modal'
-                    href='#atualizarModal'
-                    data-id='$sql->id'
-                    data-valor='$sql->meta_valor_formatado'
-                    role='button'
-                >$sql->valor_meta</a>";
+            ->addColumn('referencia', function ($sql) {
+                return $sql->planilha->referencia;
             })
-            ->rawColumns(['status', 'meta_valor']);
+            ->editColumn('meta_valor', function ($sql) {
+                return $this->isGerente
+                    ? $sql->meta_valor_formatado
+                    : "<a class=''
+                        data-bs-toggle='modal'
+                        href='#atualizarModal'
+                        data-id='$sql->id'
+                        data-valor='$sql->meta_valor_formatado'
+                        role='button'
+                    >$sql->valor_meta</a>";
+            })
+            ->editColumn('nova_meta', function ($sql) {
+                return !$this->isGerente
+                    ? $sql->nova_meta
+                    : "<a class=''
+                        data-bs-toggle='modal'
+                        href='#definirModal'
+                        data-id='$sql->id'
+                        data-valor='$sql->nova_meta'
+                        role='button'
+                    >$sql->nova_meta</a>";
+            })
+            ->rawColumns(['checkbox', 'status', 'meta_valor', 'nova_meta'])
+            ->with('totalizadores', $this->totalizadores());
     }
 
     /**
@@ -74,10 +110,18 @@ class PlanilhaItemDataTable extends DataTable
      */
     public function query(PlanilhaItem $model)
     {
+        $perfil = auth()->user()->perfil->name;
         return $model->newQuery()
             ->where('planilha_id', request()->route('planilha'))
             ->when(request()->filled('supervisores'), function ($sql) {
                 return $sql->whereIn('cod_supervisor', request()->get('supervisores'));
+            })
+            ->when(request()->filled('empresa'), function ($sql) {
+                return $sql->where('empresa', request()->get('empresa'));
+            })
+            ->when($perfil == 'supervisor', function ($sql) {
+                $codigoSupervisor = auth()->user()->supervisor->codigo;
+                return $sql->where('cod_supervisor', $codigoSupervisor);
             })
             ->when(request()->filled('status'), function ($sql) {
                 return $sql->where('status', request()->get('status'));
@@ -105,7 +149,7 @@ class PlanilhaItemDataTable extends DataTable
                             ]
                         ],
                         "language" => [
-                            "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                            "url" => "/vendor/datatables/Portuguese-Brasil.json"
                         ],
                         'responsive' => true
                     ]);
@@ -118,16 +162,16 @@ class PlanilhaItemDataTable extends DataTable
      */
     protected function getColumns()
     {
-        $colunas = [];
-        if (!PermissaoService::verificaPermissao('permite_apagar_item_planilha')) {
-            $colunas[] = Column::computed('action')
-                ->exportable(false)
-                ->printable(false)
-                ->width(60)
-                ->addClass('text-center')
-                ->title('Ações');
-        }
-        $colunas += [
+        // $colunas = [];
+        // if (!PermissaoService::verificaPermissao('permite_apagar_item_planilha')) {
+        //     $colunas[] = Column::computed('action')
+        //         ->exportable(false)
+        //         ->printable(false)
+        //         ->width(60)
+        //         ->addClass('text-center')
+        //         ->title('Ações');
+        // }
+        $colunas = [
             Column::make('data')->title('Data'),
             Column::make('cod_gerente')->title('Cod Gerente'),
             Column::make('gerente')->title('Gerente'),
@@ -149,6 +193,27 @@ class PlanilhaItemDataTable extends DataTable
             Column::make('representante')->title('Representante'),
             Column::make('status')->title('Status'),
         ];
+
+        if ($this->isGerente) {
+            $colunas = [
+                Column::make('checkbox')
+                    ->title('<input type="checkbox"  id="checkbox-master" />')
+                    ->orderable(false)
+                    ->exportable(false)
+                    ->printable(false)
+                    ->searchable(false),
+                Column::make('referencia')->title('Referência'),
+                Column::make('subgrupo_produto')->title('Subgrupo Produto'),
+                Column::make('produto')->title('Produto'),
+                Column::make('representante')->title('Representante'),
+                Column::make('meta_valor')->title('Meta Valor'),
+                Column::make('nova_meta')->title('Novo Valor'),
+                Column::make('cob_meta')->title('Cob Meta'),
+                Column::make('supervisor')->title('Supervisor'),
+                Column::make('status')->title('Status'),
+            ];
+        }
+
         return $colunas;
     }
 
@@ -161,4 +226,21 @@ class PlanilhaItemDataTable extends DataTable
     {
         return 'Metas_' . date('YmdHis');
     }
+
+    public function totalizadores()
+    {
+        $dados = $this->query((new PlanilhaItem()))->get();
+        $totalizador['empresa'] = 0;
+        $totalizador['cob_meta'] = 0;
+
+        foreach ($dados as $dado) {
+            $totalizador['cob_meta'] = $totalizador['cob_meta'] + $dado->cob_meta_numerico;
+            $totalizador['empresa'] = $totalizador['empresa'] + $dado->meta_valor_numerico;
+        }
+        $totalizador['empresa'] = number_format($totalizador['empresa'], 2, ',', '.');
+        $totalizador['cob_meta'] = number_format($totalizador['cob_meta'], 2, ',', '.');
+
+        return $totalizador;
+    }
+
 }

@@ -1,6 +1,6 @@
 @extends('layout.template')
 
-@section('title', 'Vendedor')
+@section('title', 'Vendedores')
 @section('content')
 <section class="row">
     <div class="col-12 col-lg-12">

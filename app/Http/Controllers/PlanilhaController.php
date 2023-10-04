@@ -6,6 +6,7 @@ use App\DataTables\PlanilhaDataTable;
 use App\DataTables\PlanilhaItemDataTable;
 use App\Models\Planilha;
 use App\Models\PlanilhaItem;
+use App\Services\AlteracaoMetasService;
 use App\Services\PlanilhaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -79,7 +80,7 @@ class PlanilhaController extends Controller
     public function atualizarValor(Request $request)
     {
         try {
-            PlanilhaService::atualizarValor($request->all());
+            AlteracaoMetasService::atualizarValor($request->all());
             return response()->json(['Valor Atualizado!'], 200);
         } catch (\Throwable $th) {
             Log::error([

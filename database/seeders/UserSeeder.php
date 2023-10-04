@@ -28,14 +28,23 @@ class UserSeeder extends Seeder
                 'email' => 'supervisor@email.com',
                 'password' => Hash::make('123'),
                 'is_admin' => true,
-                'perfil_id' => 3
+                'perfil_id' => 4
             ]);
+
+            User::updateOrCreate([
+                'name' => 'Analista',
+                'email' => 'analista@email.com',
+                'password' => Hash::make('123'),
+                'is_admin' => true,
+                'perfil_id' => 2
+            ]);
+
             User::updateOrCreate([
                 'name' => 'Gerente',
                 'email' => 'gerente@email.com',
                 'password' => Hash::make('123'),
                 'is_admin' => true,
-                'perfil_id' => 2
+                'perfil_id' => 3
             ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());

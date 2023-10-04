@@ -42,6 +42,8 @@ Route::group(['middleware' => ['auth']], function() {
         ->name('alteracao-metas.index');
     Route::post('/alteracao-metas/atualizar', [AlteracaoMetaController::class, 'atualizar'])
         ->name('alteracao-metas.atualizar');
+    Route::post('/alteracao-metas/definir', [AlteracaoMetaController::class, 'definir'])
+        ->name('alteracao-metas.definir-valor');
 
     Route::resource('vendedores', VendedorController::class)
         ->names('vendedores')

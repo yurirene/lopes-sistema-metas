@@ -74,7 +74,6 @@ class PlanilhaImport implements ToCollection, WithBatchInserts, WithCustomCsvSet
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             throw $th;
         }
     }

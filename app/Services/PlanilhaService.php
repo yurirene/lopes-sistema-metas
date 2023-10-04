@@ -86,7 +86,6 @@ class PlanilhaService
             DB::commit();
         } catch (Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             throw $th;
         }
     }
@@ -162,38 +161,26 @@ class PlanilhaService
     public static function filtros(): array
     {
         try {
+            $idPlanilha = request()->route('planilha') ?? null;
             $supervisores = Supervisor::all()->pluck('nome', 'codigo')->unique();
-            $status = ['' => '', 0 => 'Aguardando', 1 => 'Aprovado'];
+            $status = ['' => 'Todos', 0 => 'Aguardando', 1 => 'Aprovado'];
+            $empresas[''] = 'Todas';
+            $empresas += DB::table('planilha_items')
+                            ->select('empresa')
+                            ->distinct()
+                            ->where('planilha_id', '=', $idPlanilha)
+                            ->pluck('empresa', 'empresa')
+                            ->toArray();
             return [
                 'supervisores' => $supervisores,
-                'status' => $status
+                'status' => $status,
+                'empresas' => $empresas
             ];
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    /**
-     * Atualizar Valor da Meta
-     *
-     * @param array $request
-     * @return void
-     */
-    public static function atualizarValor(array $request): void
-    {
-        try {
-            $planilhaItem = PlanilhaItem::find($request['id']);
-            if ($planilhaItem->meta_valor_formatado == $request['valor']) {
-                return;
-            }
-            $planilhaItem->update([
-                'nova_meta' => $request['valor'],
-                'status' => 0
-            ]);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
 
     /**
      * Método para deletar item da planilha

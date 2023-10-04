@@ -22,10 +22,14 @@ class PerfisSeeder extends Seeder
                 'name' => 'master'
             ],
             2 => [
+                'nome' => 'Analista',
+                'name' => 'analista'
+            ],
+            3 => [
                 'nome' => 'Gerente',
                 'name' => 'gerente'
             ],
-            3 => [
+            4 => [
                 'nome' => 'Supervisores',
                 'name' => 'supervisor'
             ],

@@ -12,6 +12,8 @@
         </div>
         <div class="sidebar-menu">
             <ul class="menu">
+
+                <li class="sidebar-title"><b>Perfil</b>: {{ auth()->user()->perfil->nome }}</li>
                 <li class="sidebar-title">Menu</li>
 
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }} ">
@@ -21,7 +23,7 @@
                     </a>
                 </li>
 
-                @can('menu', ['master'])
+                @can('menu', ['analista', 'supervisor', 'gerente'])
                 <li class="sidebar-item {{ request()->is('planilha*') ? 'active' : '' }}">
                     <a href="{{ route('planilha.index') }}" class='sidebar-link'>
                         <i class="bi bi-file-earmark-excel"></i>
@@ -30,7 +32,7 @@
                 </li>
                 @endcan
 
-                @can('menu', ['master', 'gerente'])
+                @can('menu', ['master', 'analista'])
                 <li class="sidebar-item {{ request()->is('supervisores*') ? 'active' : '' }}">
                     <a href="{{ route('supervisores.index') }}" class='sidebar-link'>
                         <i class="bi bi-person-square"></i>
@@ -39,23 +41,23 @@
                 </li>
                 @endcan
 
-                @can('menu', ['master', 'gerente'])
+                {{-- @can('menu', ['analista', 'supervisor', 'gerente'])
                 <li class="sidebar-item {{ request()->is('alteracao-metas*') ? 'active' : '' }}">
                     <a href="{{ route('alteracao-metas.index') }}" class='sidebar-link'>
                         <i class="bi bi-clipboard-data"></i>
                         <span>Alteração de Metas</span>
                     </a>
                 </li>
-                @endcan
-
+                @endcan --}}
+{{--
                 @can('menu', ['supervisor'])
                 <li class="sidebar-item {{ request()->is('vendedor*') ? 'active' : '' }}">
                     <a href="{{ route('vendedores.index') }}" class='sidebar-link'>
-                        <i class="bi bi-person-badge"></i>
+                        <i class="bi bi-masterperson-badge"></i>
                         <span>Vendedores</span>
                     </a>
                 </li>
-                @endcan
+                @endcan --}}
 
                 @can('menu', ['master'])
                 <li class="sidebar-item {{ request()->is('usuarios*') ? 'active' : '' }}">

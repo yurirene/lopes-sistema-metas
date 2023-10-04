@@ -34,6 +34,20 @@ class PlanilhaItem extends Model
         return number_format($this->meta_valor, 2, ',', '.');
     }
 
+    public function getMetaValorNumericoAttribute()
+    {
+        $valor = str_replace('.', '', $this->meta_valor);
+        $valor = str_replace(',', '.', $valor);
+        return floatval($valor);
+    }
+
+    public function getCobMetaNumericoAttribute()
+    {
+        $valor = str_replace('.', '', $this->cob_meta);
+        $valor = str_replace(',', '.', $valor);
+        return floatval($valor);
+    }
+
     public function getValorMetaAttribute()
     {
         $valor = '';

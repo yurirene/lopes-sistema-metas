@@ -16,8 +16,12 @@
     <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="/assets/css/app.css">
     <link rel="shortcut icon" href="/assets/images/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="/css/buttons.dataTables.min.css">
+
+
+
+    <link rel="stylesheet" href="/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/vendor/datatables/buttons.dataTables.min.css">
+
     <link rel="stylesheet" href="/css/custom.css">
     <link rel="stylesheet" href="/datepicker/datepicker.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -56,14 +60,24 @@
 
 
     <script src="/assets/js/main.js"></script>
-    <script src="/js/jquery.dataTables.min.js"></script>
-    <script src="/js/dataTables.bootstrap4.min.js"></script>
-    <script src="/js/dataTables.buttons.min.js"></script>
-    <script src="{{ asset('/vendor/datatables/buttons.server-side.js') }}"></script>
+
+
+
+    <!-- ========= DATATABLE ===========-->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/vendor/datatables/dataTables.buttons.min.js"></script>
+    <script src="/vendor/datatables/buttons.server-side.js"></script>
+    <!-- ========= FIM DATATABLE ===========-->
+
+    <script src="/vendor/mask/jquery.mask.min.js"></script>
+    <script src="/vendor/sweetalert/sweetalert.min.js"></script>
+
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="/datepicker/bootstrap-datepicker.js"></script>
     <script src="/datepicker/bootstrap-datepicker.pt-BR.js"></script>
     <script src="/vendor/select2/select2.min.js"></script>
