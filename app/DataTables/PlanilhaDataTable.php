@@ -55,25 +55,29 @@ class PlanilhaDataTable extends DataTable
      */
     public function html()
     {
-        return $this->builder()
-                    ->setTableId('planilha-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')
-                            ->text('<i class="bi bi-file-earmark-arrow-up"></i> Importar')
-                            ->addClass('btn-novo-registro')
-                            ->action("function() {
-                                $('#importar').modal('show');
-                            }"),
-                    )
-                    ->parameters([
-                        "language" => [
-                            "url" => "/vendor/datatables/Portuguese-Brasil.json"
-                        ],
-                    ]);
+        $html = $this->builder()
+            ->setTableId('planilha-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(1)
+            ->parameters([
+                "buttons" => [],
+                "language" => [
+                    "url" => "/vendor/datatables/Portuguese-Brasil.json"
+                ],
+            ]);
+        if (auth()->user()->perfil->name == 'analista') {
+            $html = $html->buttons(
+                Button::make('create')
+                    ->text('<i class="bi bi-file-earmark-arrow-up"></i> Importar')
+                    ->addClass('btn-novo-registro')
+                    ->action("function() {
+                        $('#importar').modal('show');
+                }")
+            );
+        }
+        return $html;
     }
 
     /**
